@@ -76,7 +76,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <!-- PorchTotal JS File -->
-  <script src="index/js/PorchTotal.js"></script>
+  <script src="/js/PorchTotal.js"></script>
   <script>
     var map = L.map('map', {
         zoomSnap: .1,
@@ -105,7 +105,7 @@
                 ? "<b>" +
                 props.NAME +
                 "</b><br />" +
-                props.Total +
+                props.L_shaped_porch +
                 " total pokes"
                 : "Hover over a state");
     };
@@ -128,7 +128,7 @@
             color: "white",
             dashArray: "3",
             fillOpacity: 0.7,
-            fillColor: getColor(feature.properties.Total)
+            fillColor: getColor(feature.properties.L_shaped_porch)
         };
     }
   
