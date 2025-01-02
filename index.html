@@ -167,12 +167,12 @@
                     ),
                 });
 
-                var toolTipInfo = `<h3>${props.NAME} County</h3>`
+                var toolTipInfo = `<h3>${props.NAME}</h3>`
 
                 if (props[attributeValue] < 0) {
                     toolTipInfo += `<p>No data</p>`;
                 } else {
-                    toolTipInfo += `<p>$${props[attributeValue]}</p>`;
+                    toolTipInfo += `<p>${props[attributeValue]}</p>`;
                 }
 
                 layer.bindTooltip(toolTipInfo, {
