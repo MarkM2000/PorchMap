@@ -83,7 +83,7 @@
             L_shaped_porch: "L-shaped porches",
             Screened_in_porch: "Screened-in porches"
         }
-        
+
         // mapped attribute
         let attributeValue = "Screened_in_porch";
         const normValue = "Informants";
@@ -256,6 +256,60 @@
             }
         }
         // end getColor
+
+        function updateMap(STUSPS) {
+            let breaks = getClassBreaks(STUSPS);
+
+            // loop through each county layer to update the color and tooltip info
+            STUSPS.eachLayer(function (layer) {
+                let props = layer.feature.properties;
+
+                // set the fill color of layer based on its normalized data value
+                layer.setStyle({
+                    fillColor: getColor(props[attributeValue] / props[normValue], breaks),
+                });
+
+                // assemble string sequence of info for tooltip (end line break with + operator)
+                let tooltipInfo = `<b>${props["NAME"]}</b></br>
+${((props[attributeValue] / props[normValue]) * 100).toLocaleString()}`;
+
+                // bind a tooltip to layer with county-specific information
+                layer.bindTooltip(tooltipInfo, {
+                    // sticky property so tooltip follows the mouse
+                    sticky: true,
+                });
+            })
+
+            // update the legend with the current data attribute information
+            updateLegend(breaks);
+        }
+
+        function updateMap(STUSPS) {
+            let breaks = getClassBreaks(STUSPS);
+
+            // loop through each county layer to update the color and tooltip info
+            STUSPS.eachLayer(function (layer) {
+                let props = layer.feature.properties;
+
+                // set the fill color of layer based on its normalized data value
+                layer.setStyle({
+                    fillColor: getColor(props[attributeValue] / props[normValue], breaks),
+                });
+
+                // assemble string sequence of info for tooltip (end line break with + operator)
+                let tooltipInfo = `<b>${props["NAME"]}</b></br>
+${((props[attributeValue] / props[normValue]) * 100).toLocaleString()}`;
+
+                // bind a tooltip to layer with county-specific information
+                layer.bindTooltip(tooltipInfo, {
+                    // sticky property so tooltip follows the mouse
+                    sticky: true,
+                });
+            })
+
+            // update the legend with the current data attribute information
+            updateLegend(breaks);
+        }
 
         // start drawLegend
         function drawLegend(breaks) {
