@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -7,26 +9,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@300;700&display=swap" rel="stylesheet" />
     <!-- Styles CSS -->
     <link href="css/styles.css" rel="stylesheet" />
     <!-- Dropdown CSS -->
     <link href="css/dropdown.css" rel="stylesheet" />
-  </head>
-  
-  <body>
+</head>
+
+<body>
     <div class="container-fluid">
         <header class="row bg-dark text-white p-2">
-            <div class="dropdown">
-                <button class="dropbtn">Menu</button>
-                <div class="dropdown-content">
-                    <a href="#">BagTotal</a>
-                    <a href="#">SackTotal</a>
-                </div>
-            </div>
             <div class="col-8">
                 <h1>Porch Choropleth Map</h1>
             </div>
@@ -39,18 +34,18 @@
                 </p>
             </div>
         </header>
-  
+
         <section class="row">
             <div class="p-0">
                 <div id="map"></div>
             </div>
         </section>
-  
+
         <footer class="row bg-dark text-white p-2">
             <p class="text-center"></p>
         </footer>
     </div>
-  
+
     <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="offcanvasExample"
         aria-labelledby="offcanvasExampleLabel">
         <div class="offcanvas-header">
@@ -60,149 +55,278 @@
         <div class="offcanvas-body">
             <h3 class="py-2">Information</h3>
             <p></p>
-            <h3 class="py-2">Sources</h3>
             <ul class="list-unstyled">
-                <li>Authored by Mark Marji</li>
+                <li>authored by Mark Marji</a></li>
                 <li>December 27, 2024</li>
             </ul>
         </div>
     </div>
-  </body>
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"></script>
-  <!-- Add Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <!-- PorchTotal JS File -->
-  <script src="/js/PorchTotal.js"></script>
-  <script>
-    var map = L.map('map', {
-        zoomSnap: .1,
-        center: [36, -90],
-        zoom: 4.5
-    });
-  
-    var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-  
-    // control that shows state info on hover
-    var info = L.control();
-  
-    info.onAdd = function (map) {
-        this._div = L.DomUtil.create("div", "info");
-        this.update();
-        return this._div;
-    };
-  
-    info.update = function (props) {
-        this._div.innerHTML =
-            "<h4>PorchTotal</h4>" +
-            (props
-                ? "<b>" +
-                props.NAME +
-                "</b><br />" +
-                props.L_shaped_porch +
-                " total l-shaped porches" 
-                : "Hover over a state");
-    };
-  
-    info.addTo(map);
-  
-    // get color depending on SackTotal value
-    function getColor(d) {
-        return d > 60
-            ? "#FC4E2A"
-            : d > 50
-                ? "#FD8D3C"
-                : d > 40 ? "#FEB24C" : d > 30 ? "#FED976" : "#FFEDA0";
-    }
-  
-    function style(feature) {
-        return {
-            weight: 2,
-            opacity: 1,
-            color: "white",
-            dashArray: "3",
-            fillOpacity: 0.7,
-            fillColor: getColor(feature.properties.L_shaped_porch)
-        };
-    }
-  
-    function highlightFeature(e) {
-        var layer = e.target;
-  
-        layer.setStyle({
-            weight: 5,
-            color: "#666",
-            dashArray: "",
-            fillOpacity: 0.7
-        });
-  
-        if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-            layer.bringToFront();
+
+    <!-- ui is outside of container-fluid and will be dynamically added to map -->
+    <div class="form-group me-3 mt-3" id="dropdown-ui">
+        <select class="form-control bg-primary text-white">
+            <option value="L_shaped_porch">L-shaped porches</option>
+            <option value="Screened_in_porch">Screened-in porches</option>
+        </select>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <!-- Add Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- then Simple Statistics -->
+    <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
+    <script>
+        const labels = {
+            L_shaped_porch: "L-shaped porches",
+            Screened_in_porch: "Screened-in porches"
         }
-  
-        info.update(layer.feature.properties);
-    }
-  
-    var geojson;
-  
-    function resetHighlight(e) {
-        geojson.resetStyle(e.target);
-        info.update();
-    }
-  
-    function zoomToFeature(e) {
-        map.fitBounds(e.target.getBounds());
-    }
-  
-    function onEachFeature(feature, layer) {
-        layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight,
-            click: zoomToFeature
+
+        // mapped attribute
+        let attributeValue = "Screened_in_porch";
+        const normValue = "Informants";
+
+        // Add footer date
+        setDate()
+
+        // set global variables for header, map container, and footer
+        const header = document.querySelector("header");
+        const mapContainer = document.querySelector("#map");
+        const footer = document.querySelector("footer");
+
+        // set map height to fill window
+        mapContainer.style.height =
+            window.innerHeight - header.offsetHeight - footer.offsetHeight + "px";
+
+        var map = L.map('map', {
+            zoomSnap: .1,
+            center: [36, -90],
+            zoom: 4.5
         });
-    }
-  
-    geojson = L.geoJson(PorchTotal, {
-        style: style,
-        onEachFeature: onEachFeature
-    }).addTo(map);
-  
-    map.attributionControl.addAttribution(
-        'Total data &copy; <a href="http://census.gov/">US Census Bureau</a>'
-    );
-  
-    var legend = L.control({ position: "bottomright" });
-  
-    legend.onAdd = function (map) {
-        var div = L.DomUtil.create("div", "info legend"),
-            grades = [0, 10, 20, 30, 40, 50, 60],
-            labels = [],
-            from,
-            to;
-  
-        for (var i = 0; i < grades.length; i++) {
-            from = grades[i];
-            to = grades[i + 1];
-  
-            labels.push(
-                '<i style="background:' +
-                getColor(from + 1) +
-                '"></i> ' +
-                from +
-                (to ? "&ndash;" + to : "+")
-            );
+
+        var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // fetch data
+        fetch("geojson/PorchTotal.geojson")
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                // This is the JSON from our response
+                // Draw basic map from data
+                var dataLayer = L.geoJson(data, {
+                    style: function (feature) {
+                        return {
+                            color: "#333",
+                            weight: 1,
+                            fillOpacity: 1,
+                            fillColor: "#1f78b4",
+                        };
+                    },
+                }).addTo(map);
+                // Make call to update map
+                console.log(dataLayer)
+                drawMap(dataLayer);
+                // if (response.ok) {
+                //   return response.json();
+                // } else {
+                //   throw new Error(`HTTP error! status: ${response.status}`);
+                // }
+                // Return a new fetch call and continue the chain
+                return fetch("geojson/PorchTotal.geojson")
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (data) {
+                console.log(data);
+                drawAnotherLayer(data)
+            })
+            // If there is an error, log it to the console
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        // Example of keeping your page fresh
+        function setDate() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.toLocaleString('default', { month: 'long' });
+            const footerText = document.querySelector("footer p");
+            footerText.innerHTML = `${month}, ${year} | New Maps Plus`;
         }
-  
-        div.innerHTML = labels.join("<br>");
-        return div;
-    };
-  
-    legend.addTo(map);
-  </script>
-  
+
+        // start DrawMap(dataLayer)
+        function drawMap(dataLayer) {
+            var breaks = getClassBreaks(dataLayer);
+
+            dataLayer.eachLayer(function (layer) {
+                console.log(layer.feature.properties);
+            });
+
+            dataLayer.eachLayer(function (layer) {
+                var props = layer.feature.properties;
+
+                layer.setStyle({
+                    fillColor: getColor(
+                        props[attributeValue], breaks
+                    ),
+                });
+
+                var toolTipInfo = `<h3>${props.NAME}</h3>`
+
+                if (props[attributeValue] < 0) {
+                    toolTipInfo += `<p>No data</p>`;
+                } else {
+                    toolTipInfo += `<p>${props[attributeValue]}</p>`;
+                }
+
+                layer.bindTooltip(toolTipInfo, {
+                    sticky: true,
+                    className: "leaflet-tooltip-own",
+                });
+            });
+
+            drawLegend(breaks);
+        } // end drawMap()
+
+        // start GetClassBreaks(dataLayer) function
+        function getClassBreaks(dataLayer) {
+            // create empty Array for storing values
+            const values = [];
+
+            // loop through all the counties
+            dataLayer.eachLayer(function (layer) {
+                var props = layer.feature.properties;
+                var value = props[attributeValue];
+
+                if (value >= 0) {
+                    values.push(value);
+                }
+            });
+
+            // determine similar clusters
+            var clusters = ss.ckmeans(values, 5);
+
+            // create an array of the lowest value within each cluster
+            var breaks = clusters.map(function (cluster) {
+                return [cluster[0], cluster.pop()];
+            });
+
+            return breaks; // return Array of class breaks
+        }
+        // end getClassBreaks function
+
+        // start drawAnotherLayer(data)
+        function drawAnotherLayer(data) {
+            L.geoJson(data, {
+                style: function (feature) {
+                    return {
+                        color: "#222",
+                        // Make line weight larger than the county outline
+                        weight: 2,
+                        fillOpacity: 0,
+                        // This property allows us control interactivity of layer
+                        interactive: false,
+                    };
+                },
+            }).addTo(map);
+        }
+        // end drawAnotherLayer(data)
+
+        // start getColor
+        function getColor(d, breaks) {
+            if (d <= 0) {
+                return "grey";
+            } else if (d <= breaks[0][1]) {
+                return "#f7fbff";
+            } else if (d <= breaks[1][1]) {
+                return "#c8dcf0";
+            } else if (d <= breaks[2][1]) {
+                return "#73b2d8";
+            } else if (d <= breaks[3][1]) {
+                return "#2979b9";
+            } else if (d <= breaks[4][1]) {
+                return "#08306b";
+            }
+        }
+        // end getColo
+        function updateMap(STUSPS) {
+            let breaks = getClassBreaks(STUSPS);
+
+            // loop through each county layer to update the color and tooltip info
+            STUSPS.eachLayer(function (layer) {
+                let props = layer.feature.properties;
+
+                // set the fill color of layer based on its normalized data value
+                layer.setStyle({
+                    fillColor: getColor(props[attributeValue] / props[normValue], breaks),
+                });
+
+                // assemble string sequence of info for tooltip (end line break with + operator)
+                let tooltipInfo = `<b>${props["NAME"]}</b></br>
+${((props[attributeValue] / props[normValue]) * 100).toLocaleString()}`;
+
+                // bind a tooltip to layer with county-specific information
+                layer.bindTooltip(tooltipInfo, {
+                    // sticky property so tooltip follows the mouse
+                    sticky: true,
+                });
+            })
+
+            // update the legend with the current data attribute information
+            updateLegend(breaks);
+        }
+
+        // start drawLegend
+        function drawLegend(breaks) {
+            // create a new Leaflet control object, and position it top left
+            const legend = L.control({ position: "topleft" });
+
+            // when the legend is added to the map
+            legend.onAdd = function () {
+                // create a new HTML <div> element and give it a class list
+                const div = L.DomUtil.create('div',
+                    'legend d-flex flex-column px-3 py-2');
+
+                // first append an <h3> tag to the div holding the current attribute
+                // and norm values (i.e., the mapped phenomena)
+                div.innerHTML = `<h3>${attributeValue}</h3>`;
+
+                // for each of our breaks
+                for (let i = 0; i < breaks.length; i++) {
+                    // determine the color associated with each break value,
+                    // including the lower range value
+                    const color = getColor(breaks[i][0], breaks);
+
+                    // concatenate a <span> tag styled with the color and the range values
+                    // of that class and include a label with the low and a high ends of that class range
+                    div.innerHTML +=
+                        `<div class="d-flex flex-row justify-content-start">
+                  <span style="background:${color}"></span>
+                  <label>${(breaks[i][0])} &mdash; 
+                  $${(breaks[i][1])}</label>
+              </div>`;
+                }
+
+                div.innerHTML +=
+                    `<div class="d-flex flex-row justify-content-start">
+                  <span style="background:grey"></span>
+                  <label>No data</label>
+              </div>`;
+
+                // return the populated div to be added to the map
+                return div;
+            };
+
+            // add the legend to the map
+            legend.addTo(map);
+        }
+
+        map.addControl(L.control.zoom({ position: "topright" }));
+    </script>
