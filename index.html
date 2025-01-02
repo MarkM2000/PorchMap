@@ -79,9 +79,14 @@
     <!-- then Simple Statistics -->
     <script src="https://unpkg.com/simple-statistics@7.8.3/dist/simple-statistics.min.js"></script>
     <script>
-        // set global variables for map layer,
+        const labels = {
+            L_shaped_porch: "L-shaped porches",
+            Screened_in_porch: "Screened-in porches"
+        }
+        
         // mapped attribute
         let attributeValue = "Screened_in_porch";
+        const normValue = "Informants";
 
         // Add footer date
         setDate()
@@ -156,12 +161,7 @@
             footerText.innerHTML = `${month}, ${year} | New Maps Plus`;
         }
 
-        const labels = {
-            L_shaped_porch: "L-shaped porches",
-            Screened_in_porch: "Screened-in porches"
-        }
         // start DrawMap(dataLayer)
-
         function drawMap(dataLayer) {
             var breaks = getClassBreaks(dataLayer);
 
